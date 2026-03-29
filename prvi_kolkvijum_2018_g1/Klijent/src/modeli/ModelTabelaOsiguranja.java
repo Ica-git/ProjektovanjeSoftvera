@@ -5,16 +5,19 @@
  */
 package modeli;
 
+import domen.Osiguranje;
 import domen.VrstaOsiguranja;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
 
-public class ModelTabeleKlijent extends AbstractTableModel {
+public class ModelTabelaOsiguranja extends AbstractTableModel {
 
-    ArrayList<VrstaOsiguranja> lista;
-    String[] kolone = {"Naziv", "Cena"};
+    ArrayList<Osiguranje> lista;
+    String[] kolone = {"Vozilo", "Ime Prezime", "Ukupna premija", "Pocetak vazenja osiguranja"};
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
-    public ModelTabeleKlijent() {
+    public ModelTabelaOsiguranja() {
         lista = new ArrayList<>();
     }
 
@@ -35,24 +38,28 @@ public class ModelTabeleKlijent extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        VrstaOsiguranja vo = lista.get(rowIndex);
+        Osiguranje o = lista.get(rowIndex);
 
         switch (columnIndex) {
             case 0:
-                return vo.getNaziv();
+                return o.getVozilo();
             case 1:
-                return vo.getCena();
+                return o.getImePrezime();
+            case 2:
+                return o.getUkupnaPremija();
+            case 3:
+                return sdf.format(o.getDatumPocetka());
 
             default:
                 return "return!";
         }
     }
 
-    public ArrayList<VrstaOsiguranja> getLista() {
+    public ArrayList<Osiguranje> getLista() {
         return lista;
     }
     
-    public void dodaj(VrstaOsiguranja vo){
+    public void dodaj(Osiguranje vo){
         if (!lista.contains(vo)) {
                 lista.add(vo);
                 fireTableDataChanged();

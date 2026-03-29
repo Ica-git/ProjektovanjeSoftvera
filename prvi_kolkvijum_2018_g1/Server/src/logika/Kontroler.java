@@ -7,6 +7,7 @@ package logika;
 
 import baza.DBBroker;
 import domen.Korisnik;
+import domen.Osiguranje;
 import domen.Vozilo;
 import domen.VrstaOsiguranja;
 import java.util.ArrayList;
@@ -31,10 +32,10 @@ public class Kontroler {
         
         listaVrsteOsiguranja = new ArrayList<>();
         listaVrsteOsiguranja.add(new VrstaOsiguranja(1, "Obavezno osiguranje", 100));
-        listaVrsteOsiguranja.add(new VrstaOsiguranja(1, "Mini kasno osiguranje", 150));
-        listaVrsteOsiguranja.add(new VrstaOsiguranja(1, "Kasko osiguranje", 200));
-        listaVrsteOsiguranja.add(new VrstaOsiguranja(1, "Pomoc na putu - Republika Srbija", 250));
-        listaVrsteOsiguranja.add(new VrstaOsiguranja(1, "Pomoc na putu - ostale drzave", 300));
+        listaVrsteOsiguranja.add(new VrstaOsiguranja(2, "Mini kasno osiguranje", 150));
+        listaVrsteOsiguranja.add(new VrstaOsiguranja(3, "Kasko osiguranje", 200));
+        listaVrsteOsiguranja.add(new VrstaOsiguranja(4, "Pomoc na putu - Republika Srbija", 250));
+        listaVrsteOsiguranja.add(new VrstaOsiguranja(5, "Pomoc na putu - ostale drzave", 300));
         
         
         
@@ -67,6 +68,14 @@ public class Kontroler {
 
     public ArrayList<VrstaOsiguranja> getListaVrsteOsiguranja() {
         return listaVrsteOsiguranja;
+    }
+    
+    public boolean sacuvajOsiguranje(Osiguranje o) throws Exception{
+        return dbb.sacuvajOsiguranje(o);
+    }
+    
+    public ArrayList<Osiguranje> vratiSvaOsiguranja(int sifraVozila) throws Exception {
+        return dbb.vratiSvaOsiguranja(sifraVozila);
     }
     
     

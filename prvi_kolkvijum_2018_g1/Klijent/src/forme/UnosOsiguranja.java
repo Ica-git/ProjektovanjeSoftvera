@@ -4,11 +4,22 @@
  */
 package forme;
 
+import domen.Korisnik;
+import domen.Osiguranje;
 import domen.Vozilo;
 import domen.VrstaOsiguranja;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import konstante.Operacije;
 import kontroler.Komunikacija;
+import modeli.ModelTabelaOsiguranja;
+import modeli.ModelTabeleKlijent;
 import transfer.KlijentskiZahtev;
 import transfer.ServerskiOdgovor;
 
@@ -25,10 +36,24 @@ public class UnosOsiguranja extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         setTitle("Unos osiguranja");
+        
+        srediTabeluOsiguranja();
+        srediTabeluVrsta();
+        
         popuniVozila();
         popuniPodatkeVozilo();
+        popuniPodatkeTabeleOsiguranja();
         popuniOsiguranja();
+
     }
+    
+    private GlavnaForma glavnaForma;
+
+    UnosOsiguranja(GlavnaForma aThis) {
+        this();
+        this.glavnaForma = aThis;
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -42,7 +67,7 @@ public class UnosOsiguranja extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtDat = new javax.swing.JTextField();
+        txtDatum = new javax.swing.JTextField();
         cmbVozilo = new javax.swing.JComboBox();
         cmbVrstaOsiguranja = new javax.swing.JComboBox();
         jLabel4 = new javax.swing.JLabel();
@@ -51,6 +76,13 @@ public class UnosOsiguranja extends javax.swing.JFrame {
         txtGodinaProizvodnje = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txtCenaVrste = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblVrstOsiguranja = new javax.swing.JTable();
+        btnObrisi = new javax.swing.JButton();
+        btnDodaj = new javax.swing.JButton();
+        btnSacuvaj = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblOsiguranja = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,6 +120,53 @@ public class UnosOsiguranja extends javax.swing.JFrame {
 
         txtCenaVrste.setEnabled(false);
 
+        tblVrstOsiguranja.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblVrstOsiguranja);
+
+        btnObrisi.setText("Obrisi");
+        btnObrisi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnObrisiActionPerformed(evt);
+            }
+        });
+
+        btnDodaj.setText("Dodaj");
+        btnDodaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDodajActionPerformed(evt);
+            }
+        });
+
+        btnSacuvaj.setText("Sacuvaj");
+        btnSacuvaj.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSacuvajActionPerformed(evt);
+            }
+        });
+
+        tblOsiguranja.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tblOsiguranja);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -95,33 +174,43 @@ public class UnosOsiguranja extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtDat, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmbVozilo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(cmbVrstaOsiguranja, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(43, 43, 43)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(txtVlasnikVozila, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(34, 34, 34)
-                        .addComponent(txtGodinaProizvodnje, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtCenaVrste, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(132, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbVozilo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbVrstaOsiguranja, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(43, 43, 43)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(txtVlasnikVozila, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(34, 34, 34)
+                                .addComponent(txtGodinaProizvodnje, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnDodaj)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnObrisi))
+                                    .addComponent(txtCenaVrste, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addComponent(btnSacuvaj, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,7 +218,7 @@ public class UnosOsiguranja extends javax.swing.JFrame {
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtDat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDatum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(txtVlasnikVozila, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -144,7 +233,17 @@ public class UnosOsiguranja extends javax.swing.JFrame {
                     .addComponent(cmbVrstaOsiguranja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(txtCenaVrste, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(362, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnObrisi)
+                    .addComponent(btnDodaj))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSacuvaj)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -153,12 +252,88 @@ public class UnosOsiguranja extends javax.swing.JFrame {
     private void cmbVoziloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbVoziloActionPerformed
         // TODO add your handling code here:
         popuniPodatkeVozilo();
+        popuniPodatkeTabeleOsiguranja();
     }//GEN-LAST:event_cmbVoziloActionPerformed
 
     private void cmbVrstaOsiguranjaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbVrstaOsiguranjaActionPerformed
         // TODO add your handling code here:
         popniCenuVrsteOsiguranja();
     }//GEN-LAST:event_cmbVrstaOsiguranjaActionPerformed
+
+    private void btnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajActionPerformed
+        // TODO add your handling code here:
+        VrstaOsiguranja vrsta = (VrstaOsiguranja) cmbVrstaOsiguranja.getSelectedItem();
+        ModelTabeleKlijent mtk = (ModelTabeleKlijent) tblVrstOsiguranja.getModel();
+        
+        mtk.dodaj(vrsta);
+        
+        
+    }//GEN-LAST:event_btnDodajActionPerformed
+
+    private void btnObrisiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnObrisiActionPerformed
+        // TODO add your handling code here:
+        int red = tblVrstOsiguranja.getSelectedRow();
+        if (red != 1) {
+            ModelTabeleKlijent mtk = (ModelTabeleKlijent) tblVrstOsiguranja.getModel();
+            mtk.obrisi(red);
+        }
+        
+        
+    }//GEN-LAST:event_btnObrisiActionPerformed
+
+    private void btnSacuvajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSacuvajActionPerformed
+        // TODO add your handling code here:
+        String dat = txtDatum.getText();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        
+        try {
+            Date datumPocetka = sdf.parse(dat);
+            Vozilo vozilo = (Vozilo) cmbVozilo.getSelectedItem();
+            
+            
+            
+            int godina = Calendar.getInstance().get(Calendar.YEAR);
+            
+            int razlika = godina - vozilo.getGodinaProizvodnje();
+            
+            ModelTabeleKlijent mtk = (ModelTabeleKlijent) tblVrstOsiguranja.getModel();
+            
+            ArrayList<VrstaOsiguranja> vrste = mtk.getLista();
+            
+            double premija = 0;
+            
+            for (VrstaOsiguranja vo : vrste) {
+                premija += razlika * vo.getCena();
+            }
+            
+            Korisnik ulogovani = glavnaForma != null ? glavnaForma.getUlogovani() : null;
+            if (ulogovani == null) {
+                JOptionPane.showMessageDialog(this, "Nije moguce ucitati ulogovanog korisnika.");
+                return;
+            }
+            
+            Osiguranje o = new Osiguranje(-1, vozilo, datumPocetka, 
+                    new Date(), ulogovani.getImePrezime(), premija);
+            
+            
+            KlijentskiZahtev kz = new KlijentskiZahtev(Operacije.SACUVAJ_OSIGURANJA, o);
+            Komunikacija.getInstance().posaljiZahtev(kz);
+            ServerskiOdgovor so = Komunikacija.getInstance().primiOdgovor();
+            
+            if (so != null && so.getOdgovor() != null && (Boolean)so.getOdgovor()) {
+                JOptionPane.showMessageDialog(this, "Osiguranje je sacuvano. Ukupna premija iznosi: " + premija + " din.");
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Greska!");
+            }
+            
+            
+            
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(this, "Pogresan format datuma!");
+        }
+        
+    }//GEN-LAST:event_btnSacuvajActionPerformed
 
     /**
      * @param args the command line arguments
@@ -196,6 +371,9 @@ public class UnosOsiguranja extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDodaj;
+    private javax.swing.JButton btnObrisi;
+    private javax.swing.JButton btnSacuvaj;
     private javax.swing.JComboBox cmbVozilo;
     private javax.swing.JComboBox cmbVrstaOsiguranja;
     private javax.swing.JLabel jLabel1;
@@ -204,8 +382,12 @@ public class UnosOsiguranja extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblOsiguranja;
+    private javax.swing.JTable tblVrstOsiguranja;
     private javax.swing.JTextField txtCenaVrste;
-    private javax.swing.JTextField txtDat;
+    private javax.swing.JTextField txtDatum;
     private javax.swing.JTextField txtGodinaProizvodnje;
     private javax.swing.JTextField txtVlasnikVozila;
     // End of variables declaration//GEN-END:variables
@@ -261,5 +443,32 @@ public class UnosOsiguranja extends javax.swing.JFrame {
             txtCenaVrste.setText(vrstaOsiguranja.getCena() + "");
         }
         
+    }
+
+    private void srediTabeluVrsta() {
+        ModelTabeleKlijent mtk = new ModelTabeleKlijent();
+        tblVrstOsiguranja.setModel(mtk);
+    }
+
+    private void srediTabeluOsiguranja() {
+        ModelTabelaOsiguranja mto = new ModelTabelaOsiguranja();
+        tblOsiguranja.setModel(mto);
+    }
+
+    private void popuniPodatkeTabeleOsiguranja() {
+        Vozilo vozilo = (Vozilo) cmbVozilo.getSelectedItem();
+        if (vozilo == null) {
+            return;
+        }
+        KlijentskiZahtev kz = new KlijentskiZahtev(Operacije.VRATI_SACUVANA_OSIGURANJA, vozilo);
+        Komunikacija.getInstance().posaljiZahtev(kz);
+        ServerskiOdgovor so = Komunikacija.getInstance().primiOdgovor();
+        ModelTabelaOsiguranja mto = (ModelTabelaOsiguranja) tblOsiguranja.getModel();
+        mto.getLista().clear();
+        if (so != null && so.getOdgovor() != null) {
+            ArrayList<Osiguranje> lista = (ArrayList<Osiguranje>) so.getOdgovor();
+            mto.getLista().addAll(lista);
+        }
+        mto.fireTableDataChanged();
     }
 }

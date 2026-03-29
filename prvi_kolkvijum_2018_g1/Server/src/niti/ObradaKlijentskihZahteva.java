@@ -6,6 +6,7 @@
 package niti;
 
 import domen.Korisnik;
+import domen.Osiguranje;
 import domen.Vozilo;
 import domen.VrstaOsiguranja;
 import java.io.IOException;
@@ -66,6 +67,24 @@ public class ObradaKlijentskihZahteva extends Thread {
                     so.setOdgovor(null);
                     so.setPoruka(e.getMessage());
                 }break;
+                case Operacije.SACUVAJ_OSIGURANJA:
+                    try {
+                        Osiguranje o = (Osiguranje) kz.getParametar();
+                        boolean ok = Kontroler.getInstance().sacuvajOsiguranje(o);
+                        so.setOdgovor(ok);
+                } catch (Exception e) {
+                    so.setOdgovor(false);
+                    so.setPoruka(e.getMessage());
+                }break;
+                case Operacije.VRATI_SACUVANA_OSIGURANJA:
+                    try {
+                        Vozilo v = (Vozilo) kz.getParametar();
+                        ArrayList<Osiguranje> lista = Kontroler.getInstance().vratiSvaOsiguranja(v.getSifraVozila());
+                        so.setOdgovor(lista);
+                    } catch (Exception e) {
+                        so.setOdgovor(null);
+                        so.setPoruka(e.getMessage());
+                    }break;
                     
 
             }

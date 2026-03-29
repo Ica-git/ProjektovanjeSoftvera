@@ -24,6 +24,12 @@ public class GlavnaForma extends javax.swing.JFrame {
         lblUlogovani.setText("Ulogovani korisnik: " + ulogovani);
     }
 
+    public Korisnik getUlogovani() {
+        return ulogovani;
+    }
+    
+    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,7 +84,7 @@ public class GlavnaForma extends javax.swing.JFrame {
 
     private void jmiPrvaGrupaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPrvaGrupaActionPerformed
         // TODO add your handling code here:
-        UnosOsiguranja uo = new UnosOsiguranja();
+        UnosOsiguranja uo = new UnosOsiguranja(this);
         uo.pack();
         uo.setVisible(true);
         

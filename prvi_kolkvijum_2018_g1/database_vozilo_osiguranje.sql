@@ -1,4 +1,4 @@
--- Skema kao u phpMyAdmin primeru: vozilo + osiguranje
+`vozilo`-- Skema kao u phpMyAdmin primeru: vozilo + osiguranje
 -- MySQL / SQLyog
 
 CREATE DATABASE IF NOT EXISTS osiguranje_db
@@ -22,7 +22,7 @@ CREATE TABLE vozilo (
     ime               VARCHAR(60) NOT NULL,
     prezime           VARCHAR(60) NOT NULL,
     PRIMARY KEY (sifraVozila)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO vozilo (sifraVozila, regBroj, godinaProizvodnje, ime, prezime) VALUES
 (1, 'BG 27812 TX', 2012, 'Mirko', 'Mirkic'),

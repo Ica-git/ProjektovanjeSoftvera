@@ -53,6 +53,22 @@ public class VrstaOsiguranja implements Serializable{
     public String toString() {
         return naziv;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final VrstaOsiguranja other = (VrstaOsiguranja) obj;
+        return this.sifra == other.sifra;
+    }
+    
     
     
     
